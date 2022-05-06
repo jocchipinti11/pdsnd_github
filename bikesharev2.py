@@ -102,22 +102,14 @@ def load_data(city, month, day):
     #Loads data for the specified city
     rider_data = pd.read_csv(CITY_DATA[city])
 
-    #rename columns
-    rider_data.rename(columns = {'Start Time':'start_time',
-                         'End Time':'end_time',
-                         'Trip Duration':'trip_duration',
-                         'Start Station':'start_station',
-                         'End Station':'end_station',
-                         'User Type':'user_type'}, inplace = True)
-
     #convert date to match filter querie
-    rider_data['start_time'] = pd.to_datetime(rider_data['start_time'])
+    rider_data['Start Time'] = pd.to_datetime(rider_data['Start Time'])
 
     #get the filter data
         #create new columns
-    rider_data['month'] = rider_data['start_time'].dt.month
-    rider_data['day'] = rider_data['start_time'].dt.dayofweek
-    rider_data['hour'] = rider_data['start_time'].dt.hour
+    rider_data['month'] = rider_data['Start Time'].dt.month
+    rider_data['day'] = rider_data['Start Time'].dt.dayofweek
+    rider_data['hour'] = rider_data['Start Time'].dt.hour
 
          #apply filters
     if month != -1:
@@ -135,7 +127,6 @@ def load_data(city, month, day):
         end_row += 5
     return rider_data
 
-
 def time_stats(rider_data):
     """
     #displays time statistics on the most frequent times of travel.
@@ -143,11 +134,8 @@ def time_stats(rider_data):
         dataframe - contains city filtered data
     #nothing to return
     """
-
     print('='*60)
     print('\nCalculating The Most Frequent Times of Travel...\n')
-
-    start_time = time.time()
 
     # display the most common month
     m = rider_data['month'].value_counts().idxmax()
@@ -160,9 +148,7 @@ def time_stats(rider_data):
     # display the most common start hour
     h = rider_data['hour'].value_counts().idxmax()
     print('\n   {}:00 MT, was the hour of the day was the most traveled.'.format(h))
-    print("\nThis took %s seconds." % (time.time() - start_time))
     print('='*60)
-
 
 def station_stats(rider_data):
     """
@@ -172,21 +158,19 @@ def station_stats(rider_data):
     #nothing to return
     """
     print('\nCalculating the Most Popular Stations and most popular combination of stations or trips...\n')
-    start_time = time.time()
 
    # create a trip column
-    rider_data['trip'] = rider_data['start_station'] + ' -- ' + rider_data['end_station']
+    rider_data['trip'] = rider_data['Start Station'] + ' -- ' + rider_data['End Station']
 
     # display most commonly used start station, end station and combination
-    top_start_station = rider_data['start_station'].value_counts().idxmax()
-    top_end_station = rider_data['end_station'].value_counts().idxmax()
-    top_start_end_combo = rider_data['trip'].value_counts().idxmax()
+    Top_Start_Station = rider_data['Start Station'].value_counts().idxmax()
+    Top_End_Station = rider_data['End Station'].value_counts().idxmax()
+    Top_Start_end_Combo = rider_data['trip'].value_counts().idxmax()
 
     # display results
-    print('   The most common start station is: {}'.format(top_start_station))
-    print('   The most common end station is: {}'.format(top_end_station))
-    print('   The most common combination or trip are: {}'.format(top_start_end_combo))
-    print("\nThis took %s seconds." % (time.time() - start_time))
+    print('   The most common start station is: {}'.format(Top_Start_Station))
+    print('   The most common end station is: {}'.format(Top_End_Station))
+    print('   The most common combination or trip are: {}'.format(Top_Start_end_Combo))
     print('='*60)
 
 def trip_duration_stats(rider_data):
@@ -198,17 +182,14 @@ def trip_duration_stats(rider_data):
     """
 
     print('\nCalculating Trip Duration...\n')
-    start_time = time.time()
 
     #calculte the total, mean and max travel times
-    tot_travel = rider_data['trip_duration'].sum()
-    ave_travel = rider_data['trip_duration'].mean()
+    tot_travel = rider_data['Trip Duration'].sum()
+    ave_travel = rider_data['Trip Duration'].mean()
 
     #display the total, mean and max travel times
     print('The total travel time is: {}'.format(tot_travel))
     print('The average travel time is: {}'.format(ave_travel))
-
-    print("\nThis took %s seconds." % (time.time() - start_time))
     print('='*60)
 
 def user_stats(metro_area, rider_data):
@@ -219,10 +200,9 @@ def user_stats(metro_area, rider_data):
     nothing to return
     """
     print('\nCalculating User Stats...\n')
-    start_time = time.time()
 
     # Calculate and display counts of user types and gender
-    user_type_counts = rider_data['user_type'].value_counts()
+    user_type_counts = rider_data['User Type'].value_counts()
     for i, types in enumerate(user_type_counts):
         print('There are {} {}s'.format(types, user_type_counts.index[i]))
     print()
@@ -230,8 +210,6 @@ def user_stats(metro_area, rider_data):
         gender_counts = rider_data['Gender'].value_counts()
         for i, sex in enumerate(gender_counts):
             print('There are {} {}s'.format(sex, gender_counts.index[i]))
-
-    print("\nThis took %s seconds." % (time.time() - start_time))
     print('='*60)
 
 def main():
